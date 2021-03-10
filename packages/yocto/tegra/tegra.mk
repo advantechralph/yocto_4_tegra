@@ -18,13 +18,13 @@ $(builddir)/yocto/tegra/.conf:
 	@touch $@
 
 define tegra_extra_local_conf_str
-BBLAYERS += " $(builddir)/yocto/tegra/sources/poky/meta-tegra "
+MACHINE="jetson-nano-devkit-emmc"
+ACCEPT_FSL_EULA = "1"
 endef
 export tegra_extra_local_conf_str
 
 define tegra_extra_bblayers_conf_str
-MACHINE="jetson-nano-devkit-emmc"
-ACCEPT_FSL_EULA = "1"
+BBLAYERS += " $(builddir)/yocto/tegra/sources/poky/meta-tegra "
 endef
 export tegra_extra_bblayers_conf_str
 
@@ -34,8 +34,8 @@ packages/yocto/tegra/extra-conf: $(builddir)/yocto/tegra/.extra-conf
 $(builddir)/yocto/tegra/.extra-conf:
 	@sed -i -e '$$ainclude extra-bblayers.conf' $(builddir)/yocto/tegra/build/conf/bblayers.conf
 	@sed -i -e '$$ainclude extra-local.conf' $(builddir)/yocto/tegra/build/conf/local.conf
-	@echo "$${tegra_extra_local_conf_str}" > $(builddir)/yocto/tegra/build/conf/extra-bblayers.conf
-	@echo "$${tegra_extra_bblayers_conf_str}" > $(builddir)/yocto/tegra/build/conf/extra-local.conf
+	@echo "$${tegra_extra_bblayers_conf_str}" > $(builddir)/yocto/tegra/build/conf/extra-bblayers.conf
+	@echo "$${tegra_extra_local_conf_str}" > $(builddir)/yocto/tegra/build/conf/extra-local.conf
 	@echo > $(builddir)/yocto/tegra/build/conf/sanity.conf
 	@touch $@
 
