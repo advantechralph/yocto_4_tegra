@@ -34,8 +34,8 @@ packages/yocto/tegra/extra-conf: $(builddir)/yocto/tegra/.extra-conf
 $(builddir)/yocto/tegra/.extra-conf:
 	@sed -i -e '$$ainclude extra-bblayers.conf' $(builddir)/yocto/tegra/build/conf/bblayers.conf
 	@sed -i -e '$$ainclude extra-local.conf' $(builddir)/yocto/tegra/build/conf/local.conf
-	@echo "$${tegra_extra_bblayers_conf_str}" > $(builddir)/yocto/tegra/build/conf/extra-bblayers.conf
 	@echo "$${tegra_extra_local_conf_str}" > $(builddir)/yocto/tegra/build/conf/extra-local.conf
+	@echo "$${tegra_extra_bblayers_conf_str}" > $(builddir)/yocto/tegra/build/conf/extra-bblayers.conf
 	@echo > $(builddir)/yocto/tegra/build/conf/sanity.conf
 	@touch $@
 
@@ -54,7 +54,14 @@ $(builddir)/yocto/tegra/.repo_sync: $(builddir)/yocto/tegra/.repo_init
 	@cd $(builddir)/yocto/tegra && $(repo) sync
 	@touch $@
 
-.PHONY: packages/yocto/tegra/bitbake/version
-packages/yocto/tegra/bitbake/version: packages/yocto/tegra/conf
+.PHONY: packages/yocto/tegra/bitbake/versions
+packages/yocto/tegra/bitbake/versions: packages/yocto/tegra/conf
 	@cd $(builddir)/yocto/tegra && source $(builddir)/yocto/tegra/sources/poky/oe-init-build-env build && bitbake -s
+
+.PHONY: packages/yocto/tegra/bitbake/env
+packages/yocto/tegra/bitbake/env/%: packages/yocto/tegra/conf
+	@bitbake_target=$$(echo "$$(basename $(@))"; \
+		cd $(builddir)/yocto/tegra && source $(builddir)/yocto/tegra/sources/poky/oe-init-build-env build && bitbake -e $${bitbake_target};
+
+
 
